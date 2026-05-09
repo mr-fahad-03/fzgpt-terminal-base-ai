@@ -78,9 +78,16 @@ class OllamaClient:
             "format": "json",
             "options": {"temperature": self.config.temperature},
         }
-        response = requests.post(
-            f"{self.config.ollama_url}/api/chat", json=payload, timeout=120
-        )
+        try:
+            response = requests.post(
+                f"{self.config.ollama_url}/api/chat", json=payload, timeout=120
+            )
+        except requests.exceptions.ConnectionError as exc:
+            raise RuntimeError(
+                "Cannot connect to Ollama at http://127.0.0.1:11434. "
+                "Start it with `ollama serve` (or run `fzgpt doctor`). "
+                f"Then pull model: `ollama pull {self.config.model}`"
+            ) from exc
         if response.status_code == 404:
             detail = ""
             try:

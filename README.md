@@ -36,6 +36,18 @@ Or run PowerShell:
 powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1
 ```
 
+Windows notes:
+
+- If SmartScreen warns about unknown publisher, click `More info` -> `Run anyway`.
+- If PowerShell blocks the script, run:
+  - `Unblock-File .\scripts\install.ps1`
+  - `powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1`
+- The installer now also:
+  - installs Ollama (via `winget` when available),
+  - starts Ollama,
+  - waits for API health on `127.0.0.1:11434`,
+  - pulls `qwen2.5-coder`.
+
 ### Linux
 
 ```bash

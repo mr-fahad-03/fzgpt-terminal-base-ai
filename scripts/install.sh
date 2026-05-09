@@ -2,6 +2,7 @@
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+MODEL_NAME="qwen2.5-coder"
 
 say() {
   printf "\n[install] %s\n" "$1"
@@ -44,6 +45,41 @@ install_fzgpt() {
   pipx inject fzgpt faster-whisper numpy sounddevice || true
 }
 
+install_ollama_if_possible() {
+  if command -v ollama >/dev/null 2>&1; then
+    say "Ollama already installed"
+    return
+  fi
+
+  if command -v brew >/dev/null 2>&1; then
+    say "Installing Ollama via Homebrew"
+    brew install ollama || true
+  fi
+
+  if ! command -v ollama >/dev/null 2>&1; then
+    echo "Ollama not found. Install it manually from https://ollama.com/download"
+  fi
+}
+
+start_ollama_and_pull_model() {
+  if ! command -v ollama >/dev/null 2>&1; then
+    return
+  fi
+
+  say "Starting Ollama"
+  if command -v brew >/dev/null 2>&1; then
+    brew services start ollama >/dev/null 2>&1 || true
+  fi
+
+  if ! curl -fsS "http://127.0.0.1:11434/api/tags" >/dev/null 2>&1; then
+    nohup ollama serve >/tmp/fzgpt-ollama.log 2>&1 &
+    sleep 2
+  fi
+
+  say "Pulling model ${MODEL_NAME} (can take time)"
+  ollama pull "${MODEL_NAME}" || true
+}
+
 print_next_steps() {
   say "Install complete"
   cat <<STEPS
@@ -62,4 +98,6 @@ STEPS
 ensure_python
 ensure_pipx
 install_fzgpt
+install_ollama_if_possible
+start_ollama_and_pull_model
 print_next_steps
