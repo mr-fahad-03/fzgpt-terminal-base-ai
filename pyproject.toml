@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fzgpt"
+version = "0.1.0"
+description = "Local AI CLI agent with Ollama, voice input, and safe action approvals"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "fzgpt" }]
+dependencies = [
+  "requests>=2.31.0",
+  "urllib3<2",
+  "tomli>=2.0.0; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+voice = [
+  "faster-whisper>=1.0.3",
+  "numpy>=1.26.0",
+  "sounddevice>=0.4.6",
+]
+dev = [
+  "pytest>=8.2.0",
+]
+
+[project.scripts]
+fzgpt = "fzgpt.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
