@@ -1,4 +1,4 @@
-# fzgpt
+# FZGPT - AN AI Terminal Base Agent 
 
 `fzgpt` is a local AI terminal assistant powered by open-source models via Ollama.
 
